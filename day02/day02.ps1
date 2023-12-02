@@ -2,8 +2,8 @@
 $ArrayOfGame = New-Object System.Collections.Generic.List[System.Object]
 
 for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
-	$sgwaergaewrfgs = $i +1;
-	echo "game number is: $sgwaergaewrfgs";
+	[int]$gameNum = $i +1;
+	echo "game number is: $gameNum";
 	
 	$thisGame = $arrayFromFile[$i].Split(":");
 	$thisGame = $thisGame[1] -replace ';',',';
@@ -18,25 +18,23 @@ for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
 			{$node.contains("green")} {$thisNumber = $node.Split(" "); [int]$greenCount = [int]$greenCount + [int]$thisNumber[1];}
 			{$node.contains("red")} {$thisNumber = $node.Split(" "); [int]$redCount = [int]$redCount + [int]$thisNumber[1];}
 			
-			#{$node.contains("blue")} {echo "is blue"}
-			#{$node.contains("green")} {echo "is green"}
-			#{$node.contains("red")} {echo "is red"}
 			Default {echo "Unknown number!"}
 		}
-	#echo "-----------------------------------------+"
-	#echo $node
-	#echo "-----------------------------------------+"
 	}
 	
-	echo "blue toal is: $blueCount"
-	echo "green toal is: $greenCount"
-	echo "red toal  is: $redCount"
+	echo "blue total is: $blueCount"
+	echo "green total is: $greenCount"
+	echo "red total is: $redCount"
 	echo "------------------------------------------"
 	
-	
+	if ($blueCount -lt 14 -And $greenCount -lt 13 -And $redCount -lt 12) {
+	 $ArrayOfGame.Add($gameNum);
+	}
 }
-echo " "
-echo "Done. "
+echo "------------------------------------------"
+echo $ArrayOfGame
+echo "------------------------------------------"
+echo $ArrayOfGame | measure-object -sum
 #$sets = $thisGame[1].Split(";");
 #$set1 = $sets[0];
 #$set2 = $sets[1];
