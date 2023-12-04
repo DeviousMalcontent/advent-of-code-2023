@@ -2,13 +2,16 @@
 $ArrayOfGame = New-Object System.Collections.Generic.List[System.Object]
 
 for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
-	$partsList = $arrayFromFile[$i];
-
-	echo "------------------------------------------"
-	if ($i -gt 0) {echo $arrayFromFile[$i-1]}
+	$partsList = $arrayFromFile[$i] -split "(\.)";
+	#{$_ -eq "e" -or $_ -eq "p"}
+	
 	echo $partsList
-	if ($i -lt $arrayFromFile.Length) {echo $arrayFromFile[$i+1]}
+	
 	echo "------------------------------------------"
+	#if ($i -gt 0) {echo $arrayFromFile[$i-1]}
+	#echo $partsList
+	#if ($i -lt $arrayFromFile.Length) {echo $arrayFromFile[$i+1]}
+	#echo "------------------------------------------"
 	
 	
 	#$thisGame = $thisGame[1] -replace ';',',';
