@@ -1,8 +1,17 @@
 [string[]]$arrayFromFile = Get-Content -Path 'input'
-([regex]'(\d+)').Matches($arrayFromFile).value
+$partNumberValue = ([regex]'(\d+)').Matches($arrayFromFile).Value
+$partNumberIndex = ([regex]'(\d+)').Matches($arrayFromFile).Index
+$partNumberLength = ([regex]'(\d+)').Matches($arrayFromFile).Length
 
-[string[]]$arrayFromFile = Get-Content -Path 'input'
-([regex]'(\d+)').Matches($arrayFromFile).index
+for ($i=0; $i -lt $partNumberValue.Length; $i++) {
+	echo $partNumberValue[$i],$partNumberIndex[$i],$partNumberLength[$i];
+}
+
+$partNumber = New-Object -TypeName partNumber
+$partNumber | Add-Member -MemberType NoteProperty -Name rows -Value 3
+$partNumber | Add-Member -MemberType NoteProperty -Name columns -Value 0
+$partNumber | Add-Member -MemberType NoteProperty -Name value -Value 0
+
 ##$ArrayOfNumbers = New-Object System.Collections.Generic.List[System.Object]
 ##$ArrayOfSymbols = New-Object System.Collections.Generic.List[System.Object]
 
