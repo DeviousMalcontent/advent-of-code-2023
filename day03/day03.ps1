@@ -11,34 +11,41 @@ $symbolIndex = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Index
 $symbolLength = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Length
 
 for ($i=0; $i -lt $partNumberValue.Length; $i++) {
-	$thisPartNumber = [PSCustomObject]@{
-		rows = $partNumberLength[$i];
+		rows = $partNumberLength[$i].PadLeft(1,'0').PadRight(1,'0');
 		columns = $partNumberIndex[$i];
-		value = $partNumberValue[$i];
+		value = $partNumberValue[$i] -as [int];
 	}
 	$ArrayOfNumbers.Add($thisPartNumber);
 }
 
-
 for ($i=0; $i -lt $symbolValue.Length; $i++) {
 	$thisSymbol = [PSCustomObject]@{
-		rows = $symbolLength[$i];
-		columns = $symbolIndex[$i];
+		row = $symbolLength[$i];
+		column = $symbolIndex[$i];
 		value = $symbolValue[$i];
 	}
 	$ArrayOfSymbols.Add($thisSymbol);
 	
-	echo $symbolValue[$i],$symbolIndex[$i],$symbolLength[$i];
-	echo "------------------------------------------"
+	#echo $symbolValue[$i],$symbolIndex[$i],$symbolLength[$i];
+	#echo "------------------------------------------"
 }
 
-	#$thisPartNumber = New-Object -TypeName thisPartNumber
-	#$thisPartNumber | Add-Member -MemberType NoteProperty -Name rows -Value $partNumberLength[$i];
-	#$thisPartNumber | Add-Member -MemberType NoteProperty -Name columns -Value $partNumberIndex[$i];
-	#$thisPartNumber | Add-Member -MemberType NoteProperty -Name value -Value $partNumberValue[$i];
-	
-	#echo $partNumberValue[$i],$partNumberIndex[$i],$partNumberLength[$i];
-	#echo "------------------------------------------"
+foreach($Symbol in $ArrayOfSymbols){
+	if($Symbol.row -in $ArrayOfNumbers.rows -and $Symbol.column -in $ArrayOfNumbers.columns){
+		echo $ArrayOfNumbers.value
+	}
+	#echo $ArrayOfNumbers.value
+}
+	#} | Measure-Object -Property value -Sum |% Sum
+
+
+#$thisPartNumber = New-Object -TypeName thisPartNumber
+#$thisPartNumber | Add-Member -MemberType NoteProperty -Name rows -Value $partNumberLength[$i];
+#$thisPartNumber | Add-Member -MemberType NoteProperty -Name columns -Value $partNumberIndex[$i];
+#$thisPartNumber | Add-Member -MemberType NoteProperty -Name value -Value $partNumberValue[$i];
+
+#echo $partNumberValue[$i],$partNumberIndex[$i],$partNumberLength[$i];
+#echo "------------------------------------------"
 
 #$thisPartNumber = New-Object -TypeName thisPartNumber
 #$thisPartNumber | Add-Member -MemberType NoteProperty -Name rows -Value 3
