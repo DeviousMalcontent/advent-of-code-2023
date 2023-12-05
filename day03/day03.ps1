@@ -1,11 +1,25 @@
 [string[]]$arrayFromFile = Get-Content -Path 'input'
-$ArrayOfGame = New-Object System.Collections.Generic.List[System.Object]
+([regex]'(\d+)').Matches($arrayFromFile).value
+
+[string[]]$arrayFromFile = Get-Content -Path 'input'
+([regex]'(\d+)').Matches($arrayFromFile).index
+##$ArrayOfNumbers = New-Object System.Collections.Generic.List[System.Object]
+##$ArrayOfSymbols = New-Object System.Collections.Generic.List[System.Object]
 
 for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
-	$partsList = $arrayFromFile[$i] -split "(\.)";
+	$partsList = $arrayFromFile[$i];
 	#{$_ -eq "e" -or $_ -eq "p"}
 	
-	echo $partsList
+	#look for numbers
+	if ($partsList -AllMatches '^(\d+)') {
+		echo $Matches
+		#for ($j=0; $j -lt $Matches.Length; $j++) {
+		#echo $Matches.$j;
+		#}
+	  #$thisNumber.row =
+	}
+	
+	#echo $partsList
 	
 	echo "------------------------------------------"
 	#if ($i -gt 0) {echo $arrayFromFile[$i-1]}
@@ -33,3 +47,5 @@ for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
 
 #echo "------------------------------------------"
 #echo $ArrayOfGame | measure-object -sum
+
+
