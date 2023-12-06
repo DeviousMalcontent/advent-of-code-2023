@@ -10,18 +10,22 @@ $symbolValue = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Value
 $symbolIndex = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Index
 $symbolLength = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Length
 
-for ($i=0; $i -lt $partNumberValue.Length; $i++) {
-		rows = $partNumberLength[$i].PadLeft(1,'0').PadRight(1,'0');
-		columns = $partNumberIndex[$i];
+#echo $symbolIndex
+#echo "------------------------------------------"
+
+for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
+	$thisPartNumber = [PSCustomObject]@{
+		rows = ($i-1)..($i+1);
+		columns = ($partNumberIndex[$i].Index-1)..($partNumberIndex[$i].Index + $partNumberLength.Length);
 		value = $partNumberValue[$i] -as [int];
 	}
 	$ArrayOfNumbers.Add($thisPartNumber);
 }
 
-for ($i=0; $i -lt $symbolValue.Length; $i++) {
+for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
 	$thisSymbol = [PSCustomObject]@{
-		row = $symbolLength[$i];
-		column = $symbolIndex[$i];
+		row = $i -as [int];
+		column = ($symbolIndex[$i]); #Distance from last new line!
 		value = $symbolValue[$i];
 	}
 	$ArrayOfSymbols.Add($thisSymbol);
@@ -30,13 +34,24 @@ for ($i=0; $i -lt $symbolValue.Length; $i++) {
 	#echo "------------------------------------------"
 }
 
-foreach($Symbol in $ArrayOfSymbols){
-	if($Symbol.row -in $ArrayOfNumbers.rows -and $Symbol.column -in $ArrayOfNumbers.columns){
-		echo $ArrayOfNumbers.value
-	}
-	#echo $ArrayOfNumbers.value
-}
-	#} | Measure-Object -Property value -Sum |% Sum
+foreach($Symbol in $ArrayOfNumbers) {echo $Symbol.columns}
+
+
+#	echo $ArrayOfNumbers.columns
+#	#echo "-"
+#	#echo $ArrayOfNumbers.rows, ",", $ArrayOfNumbers.columns;
+#	echo "------------------------------------------"
+#
+#foreach($Symbol in $ArrayOfSymbols){
+#	#echo $ArrayOfNumbers.columns
+#	#echo "-"
+#	#echo $Symbol.column
+#	#echo "------------------------------------------"
+#	if($Symbol.row -in $ArrayOfNumbers.rows -and $Symbol.column -in $ArrayOfNumbers.columns){
+#		echo 1
+#	}
+#	#echo $ArrayOfNumbers.value
+#}
 
 
 #$thisPartNumber = New-Object -TypeName thisPartNumber
