@@ -1,40 +1,82 @@
 [string[]]$arrayFromFile = Get-Content -Path 'input'
-
-$ArrayOfNumbers = New-Object System.Collections.Generic.List[System.Object]
-$partNumberValue = ([regex]'(\d+)').Matches($arrayFromFile).Value
-$partNumberIndex = ([regex]'(\d+)').Matches($arrayFromFile).Index
-$partNumberLength = ([regex]'(\d+)').Matches($arrayFromFile).Length
-
 $ArrayOfSymbols = New-Object System.Collections.Generic.List[System.Object]
-$symbolValue = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Value
-$symbolIndex = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Index
-$symbolLength = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Length
+$ArrayOfNumbers = New-Object System.Collections.Generic.List[System.Object]
 
-#echo $symbolIndex
-#echo "------------------------------------------"
-
-for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
-	$thisPartNumber = [PSCustomObject]@{
-		rows = ($i-1)..($i+1);
-		columns = ($partNumberIndex[$i].Index-1)..($partNumberIndex[$i].Index + $partNumberLength.Length);
-		value = $partNumberValue[$i] -as [int];
+$lineNumber = 0;
+foreach ($line in $arrayFromFile)
+{
+    foreach ($number in ([regex]'(\d+)').Matches($line)) {
+		$thisPartNumber = [PSCustomObject]@{
+			rows = ($lineNumber-1)..($lineNumber+1);
+			columns = ($number.Index-1)..($number.Index + $number.Length);
+			value = $number.Value -as [int];
+		}
+		$ArrayOfNumbers.Add($thisPartNumber);
 	}
-	$ArrayOfNumbers.Add($thisPartNumber);
-}
 
-for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
-	$thisSymbol = [PSCustomObject]@{
-		row = $i -as [int];
-		column = ($symbolIndex[$i]); #Distance from last new line!
-		value = $symbolValue[$i];
+    foreach ($symbol in ([regex]'([@*/&#%+=$-])').Matches($line)){
+		$thisSymbol = [PSCustomObject]@{
+			row = $lineNumber -as [int];
+			column = $symbol.Index; #Distance from last new line!
+			value = $symbol.Value;
+		}
+		$ArrayOfSymbols.Add($thisSymbol);
 	}
-	$ArrayOfSymbols.Add($thisSymbol);
-	
-	#echo $symbolValue[$i],$symbolIndex[$i],$symbolLength[$i];
-	#echo "------------------------------------------"
-}
 
-foreach($Symbol in $ArrayOfNumbers) {echo $Symbol.columns}
+    $lineNumber++;
+}
+foreach($Symbol in $ArrayOfSymbols) {
+	if($Symbol.row -in $Number.rows -and $Symbol.column -in $Number.columns){
+		echo $Number.Value;
+		echo "------------------------------------------"
+	}
+}
+#foreach($Symbol in $ArrayOfSymbols) {echo $Symbol.row}
+
+#foreach($Number in $ArrayOfNumbers) {echo $Number.rows}
+#foreach($Number in $ArrayOfNumbers) {echo $Number.columns}
+
+#foreach($ArrayOfNumbers in $ArrayOfSymbols) {echo $Symbol.column}
+
+#$ArrayOfNumbers = New-Object System.Collections.Generic.List[System.Object]
+#$partNumberValue = ([regex]'(\d+)').Matches($arrayFromFile).Value
+#$partNumberIndex = ([regex]'(\d+)').Matches($arrayFromFile).Index
+#$partNumberLength = ([regex]'(\d+)').Matches($arrayFromFile).Length
+#
+#$ArrayOfSymbols = New-Object System.Collections.Generic.List[System.Object]
+#$symbolValue = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Value
+#$symbolIndex = ([regex]'([@\n})').Matches($arrayFromFile)
+#$symbolLength = ([regex]'([@*/&#%+=$-])').Matches($arrayFromFile).Length
+#
+##echo $symbolIndex
+##echo "------------------------------------------"
+#
+#for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
+#	$thisPartNumber = [PSCustomObject]@{
+#		rows = ($i-1)..($i+1);
+#		columns = ($partNumberIndex[$i].Index-1)..($partNumberIndex[$i].Index + $partNumberLength.Length);
+#		value = $partNumberValue[$i] -as [int];
+#	}
+#	$ArrayOfNumbers.Add($thisPartNumber);
+#}
+#
+## Stupid fucking hack 
+##foreach($line in $arrayFromFile) {$lineLength = $line.Length+1}
+##echo $lineLength
+#
+#for ($i=0; $i -lt $arrayFromFile.Length; $i++) {
+#	$thisSymbol = [PSCustomObject]@{
+#		row = $i -as [int];
+#		column = ($symbolIndex[$i]); #Distance from last new line!
+#		value = $symbolValue[$i];
+#	}
+#	$ArrayOfSymbols.Add($thisSymbol);
+#	
+#	#echo $symbolValue[$i],$symbolIndex[$i],$symbolLength[$i];
+#	#echo "------------------------------------------"
+#}
+#
+#foreach($Symbol in $ArrayOfSymbols) {echo $Symbol.column}
 
 
 #	echo $ArrayOfNumbers.columns
