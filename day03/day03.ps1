@@ -1,47 +1,100 @@
 [string[]]$arrayFromFile = Get-Content -Path 'input'
 $ArrayOfSymbols = New-Object System.Collections.Generic.List[System.Object]
 $ArrayOfNumbers = New-Object System.Collections.Generic.List[System.Object]
+$ArrayOfObjects = New-Object System.Collections.Generic.List[System.Object]
 
 $lineNumber = 0;
 foreach ($line in $arrayFromFile)
 {
     foreach ($number in ([regex]'(\d+)').Matches($line)) {
 		$thisPartNumber = [PSCustomObject]@{
-			#PSTypeName = "Number"
+			PSTypeName = "Number"
 			rows = ($lineNumber-1)..($lineNumber+1);
 			columns = ($number.Index-1)..($number.Index + $number.Length);
 			value = $number.Value -as [int];
 		}
-		$ArrayOfNumbers.Add($thisPartNumber);
+		#$ArrayOfNumbers.Add($thisPartNumber);
+		$ArrayOfObjects.Add($thisPartNumber);
 	}
 
     foreach ($symbol in ([regex]'([@*/&#%+=$-])').Matches($line)){
 		$thisSymbol = [PSCustomObject]@{
-			#PSTypeName = "Symbol"
-			row = $lineNumber -as [int];
+			PSTypeName = "Symbol"
+			row = $lineNumber #-as [int];
 			column = $symbol.Index; #Distance from last new line!
 			value = $symbol.Value;
 		}
-		$ArrayOfSymbols.Add($thisSymbol);
+		#$ArrayOfSymbols.Add($thisSymbol);
+		$ArrayOfObjects.Add($thisSymbol);
 	}
 
     $lineNumber++;
 }
-
-foreach ($Number in $ArrayOfNumbers) {
-	#echo $Number.Value;
-	
-	if(($ArrayOfSymbols.row | Where-Object {$_ -contains $Number.rows}) -and ($ArrayOfSymbols.column | Where-Object {$_ -contains $Number.columns})) {
-	#if(($Number.rows -contains $ArrayOfSymbols.row) -and ($Number.columns -contains $ArrayOfSymbols.column)) {
-		echo $Number.Value;
-	#	echo "------------------------------------------"
-	}
+foreach ($Object in $ArrayOfObjects) {
+echo ($ArrayOfObjects.rows -contains $ArrayOfObjects.row) and ($ArrayOfObjects.columns -contains $ArrayOfObjects.column);
+echo "------------------------------------------"
 }
+#echo $Result;
+
+
+#echo $ArrayOfNumbers.value | Where-Object { $ArrayOfNumbers.rows.contains($ArrayOfSymbols.row) }
+
+#foreach ($Number in $ArrayOfNumbers) {
+#	if ($Number.rows -contains $ArrayOfSymbols.row) {
+#    Write-Output $Number.value;
+#	}
+#}
+	
+	
+#	if(($ArrayOfSymbols.row -in $Number.rows) -and ($ArrayOfSymbols.column -in $Number.columns)) {
+#			echo $Number.value;
+#			echo "------------------------------------------"
+#	}
+#}
+
+#foreach ($Number in $ArrayOfNumbers) {
+#    foreach ($Symbol in $ArrayOfSymbols) {
+#		if(($Number.rows -in $Symbol.row) -and ($Number.columns -in $Symbol.column)) {
+#			echo $Number.Value
+#			echo "------------------------------------------"
+#		}	
+#		#$obj | Add-Member -MemberType NoteProperty -Name 'Name' -Value ($array2 | Where-Object { $_.Id -eq $obj.Id }).Name
+#    }
+#}
+
+
+
+#foreach($Number in $ArrayOfNumbers) {
+#	if($ArrayOfSymbols.Where({ (($ArrayOfSymbols.row -in $Number.rows) -and ($ArrayOfSymbols.column -in $Number.columns)) }, 'First')){
+#		echo $Number.value
+#		echo "------------------------------------------"
+#	} else {
+#		echo 0;
+#	}
+#}
+
+#foreach($Symbol in $ArrayOfSymbols) {
+#}
+
+#echo $ArrayOfNumbers.value | Where-Object ($ArrayOfNumbers.rows -match $ArrayOfSymbols.row)
+
+#Compare-Object $ArrayOfSymbols $ArrayOfNumbers -Property column,row | Where-Object SideIndicator -eq "=="
+
+#-Property columns,column,rows,row
+
+#foreach ($Number in $ArrayOfNumbers) {
+#	#echo $Number.Value;
+#	if(($ArrayOfSymbols.row | Where-Object {$_ -contains $Number.rows}) -and ($ArrayOfSymbols.column | Where-Object {$_ -contains $Number.columns})) {
+#	#if(($Number.rows -contains $ArrayOfSymbols.row) -and ($Number.columns -contains $ArrayOfSymbols.column)) {
+#		echo $Number.Value;
+#	#	echo "------------------------------------------"
+#	}
+#}
 
 
 #for ($i=0; $i -lt $ArrayOfNumbers.Length; $i++) {
 #	echo $ArrayOfNumbers.Value;
-#	#if(($ArrayOfNumber.rows -in $ArrayOfSymbols.row) -and ($ArrayOfNumbers.columns -in $ArrayOfSymbols.column)) {
+#	#if(($ArrayOfNumbers.rows -in $ArrayOfSymbols.row) -and ($ArrayOfNumbers.columns -in $ArrayOfSymbols.column)) {
 #	#		echo $ArrayOfNumbers.Value;
 #	#		echo "------------------------------------------"
 #	#}
