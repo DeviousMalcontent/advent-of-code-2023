@@ -1,6 +1,6 @@
 [string[]]$arrayFromFile = Get-Content -Path 'input'
-$ArrayOfSymbols = New-Object System.Collections.Generic.List[System.Object]
-$ArrayOfNumbers = New-Object System.Collections.Generic.List[System.Object]
+#$ArrayOfSymbols = New-Object System.Collections.Generic.List[System.Object]
+#$ArrayOfNumbers = New-Object System.Collections.Generic.List[System.Object]
 $ArrayOfObjects = New-Object System.Collections.Generic.List[System.Object]
 
 $lineNumber = 0;
@@ -8,7 +8,8 @@ foreach ($line in $arrayFromFile)
 {
     foreach ($number in ([regex]'(\d+)').Matches($line)) {
 		$thisPartNumber = [PSCustomObject]@{
-			PSTypeName = "Number"
+			#PSTypeName = "Number"
+			type = "Number"
 			rows = ($lineNumber-1)..($lineNumber+1);
 			columns = ($number.Index-1)..($number.Index + $number.Length);
 			value = $number.Value -as [int];
@@ -19,7 +20,8 @@ foreach ($line in $arrayFromFile)
 
     foreach ($symbol in ([regex]'([@*/&#%+=$-])').Matches($line)){
 		$thisSymbol = [PSCustomObject]@{
-			PSTypeName = "Symbol"
+			#PSTypeName = "Symbol"
+			type = "Symbol"
 			row = $lineNumber #-as [int];
 			column = $symbol.Index; #Distance from last new line!
 			value = $symbol.Value;
@@ -30,10 +32,44 @@ foreach ($line in $arrayFromFile)
 
     $lineNumber++;
 }
-foreach ($Object in $ArrayOfObjects) {
-echo ($ArrayOfObjects.rows -contains $ArrayOfObjects.row) and ($ArrayOfObjects.columns -contains $ArrayOfObjects.column);
-echo "------------------------------------------"
-}
+
+
+$Symbols = $ArrayOfObjects | Where-Object type -eq Symbol
+$ArrayOfObjects | Where-Object type -eq Number | Where-Object {foreach($Symbol in $Symbols){if($Symbol.row -in $_.rows -and $Symbol.column -in $_.columns){$true}}} | Measure-Object -Property value -Sum |% Sum
+
+#echo $ArrayOfObjects;
+
+#$Symbols = $ArrayOfObjects | Where-Object type -eq "Symbol"
+#$Number = $ArrayOfObjects | Where-Object type -eq "Number"
+#
+#Where-Object {foreach($Symbol in $Symbols){if($Symbol.row -in $Number.rows -and $Symbol.column -in $Number.columns){$true}}} | Measure-Object -Property value -Sum |% Sum
+
+#$Number | ForEach-Object {
+#	foreach($Symbol in $Symbols){
+#		if($Symbol.row -in $Number.rows -and $Symbol.column -in $Number.columns){
+#		  value
+#		}
+#	}
+#}
+#echo $Result
+
+
+#$Symbols = $ArrayOfObjects |? type -eq Symbol
+#$ArrayOfObjects |? type -eq Number |? {foreach($symbol in $Symbols){if($symbol.row -in $_.rows -and $symbol.column -in $_.columns){$true}}} | Measure-Object -Property value -Sum |% Sum
+
+
+
+#foreach($Symbol in $Symbols) {
+#	if($Symbol.row -in $Numbers.rows -and $Symbol.column -in $Numbers.columns){
+#		$true
+#	}
+#}
+
+
+#foreach ($Object in $ArrayOfObjects) {
+#echo ($ArrayOfObjects.rows -contains $ArrayOfObjects.row) and ($ArrayOfObjects.columns -contains $ArrayOfObjects.column);
+#echo "------------------------------------------"
+#}
 #echo $Result;
 
 
