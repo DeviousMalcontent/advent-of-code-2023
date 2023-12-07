@@ -11,7 +11,6 @@ foreach ($line in $arrayFromFile)
 			rows = ($lineNumber-1)..($lineNumber+1);
 			columns = ($number.Index-1)..($number.Index + $number.Length);
 			value = $number.Value -as [int];
-			isAdjacent = $false;
 		}
 		$ArrayOfNumbers.Add($thisPartNumber);
 	}
@@ -31,7 +30,6 @@ foreach ($line in $arrayFromFile)
 foreach ($Symbol in $ArrayOfSymbols) {
 	foreach ($Number in $ArrayOfNumbers) {
 		if ($Symbol.row -in $Number.rows -and $Symbol.column -in $Number.columns) {
-		 $Number.isAdjacent = $true;
 		 $ArrayToSum.Add($Number.value -as [int]);
 		}
 	}
