@@ -7,6 +7,7 @@ foreach ($line in $arrayFromFile)
 {
     foreach ($number in ([regex]'(\d+)').Matches($line)) {
 		$thisPartNumber = [PSCustomObject]@{
+			#PSTypeName = "Number"
 			rows = ($lineNumber-1)..($lineNumber+1);
 			columns = ($number.Index-1)..($number.Index + $number.Length);
 			value = $number.Value -as [int];
@@ -16,6 +17,7 @@ foreach ($line in $arrayFromFile)
 
     foreach ($symbol in ([regex]'([@*/&#%+=$-])').Matches($line)){
 		$thisSymbol = [PSCustomObject]@{
+			#PSTypeName = "Symbol"
 			row = $lineNumber -as [int];
 			column = $symbol.Index; #Distance from last new line!
 			value = $symbol.Value;
@@ -25,12 +27,61 @@ foreach ($line in $arrayFromFile)
 
     $lineNumber++;
 }
-foreach($Symbol in $ArrayOfSymbols) {
-	if($Symbol.row -in $Number.rows -and $Symbol.column -in $Number.columns){
+
+foreach ($Number in $ArrayOfNumbers) {
+	#echo $Number.Value;
+	
+	if(($ArrayOfSymbols.row | Where-Object {$_ -contains $Number.rows}) -and ($ArrayOfSymbols.column | Where-Object {$_ -contains $Number.columns})) {
+	#if(($Number.rows -contains $ArrayOfSymbols.row) -and ($Number.columns -contains $ArrayOfSymbols.column)) {
 		echo $Number.Value;
-		echo "------------------------------------------"
+	#	echo "------------------------------------------"
 	}
 }
+
+
+#for ($i=0; $i -lt $ArrayOfNumbers.Length; $i++) {
+#	echo $ArrayOfNumbers.Value;
+#	#if(($ArrayOfNumber.rows -in $ArrayOfSymbols.row) -and ($ArrayOfNumbers.columns -in $ArrayOfSymbols.column)) {
+#	#		echo $ArrayOfNumbers.Value;
+#	#		echo "------------------------------------------"
+#	#}
+#}
+
+
+#foreach($Number in $ArrayOfNumbers) {
+#	if($ArrayOfSymbols.Where({ (($ArrayOfSymbols.row -in $Number.rows) -and ($ArrayOfSymbols.column -in $Number.columns)) }, 'First')){
+#		echo $Number.Value
+#		echo "------------------------------------------"
+#	} else {
+#		echo 0;
+#	}
+#}
+
+#foreach($Symbol in $ArrayOfSymbols) {
+#	if($ArrayOfNumbers.Where({ (($Symbol.row -in $ArrayOfNumbers.rows) -and ($Symbol.column -in $ArrayOfNumbers.columns)) }, 'First')){
+#        echo 1;
+#		$Symbol.Value
+#		echo "------------------------------------------"
+#	} else {
+#		echo 0;
+#	}
+#}
+
+#foreach($Symbol in $ArrayOfSymbols) {
+#	if ($ArrayOfNumbers.Where( { (($Symbol.row -in $ArrayOfNumbers.rows) -and ($Symbol.column -in $ArrayOfNumbers.columns)) } ))  {
+#        echo $Symbol.Value;
+#		echo "------------------------------------------"
+#    }
+#}
+
+#foreach($Number in $ArrayOfNumbers) {
+#	if ($ArrayOfSymbols.Where( { (($Number.rows -in $ArrayOfSymbols.row) -and ($Number.columns -in $ArrayOfSymbols.column)) } ))  {
+#        echo $Number;
+#		echo "------------------------------------------"
+#    }
+#}
+
+
 #foreach($Symbol in $ArrayOfSymbols) {echo $Symbol.row}
 
 #foreach($Number in $ArrayOfNumbers) {echo $Number.rows}
@@ -60,7 +111,6 @@ foreach($Symbol in $ArrayOfSymbols) {
 #	$ArrayOfNumbers.Add($thisPartNumber);
 #}
 #
-## Stupid fucking hack 
 ##foreach($line in $arrayFromFile) {$lineLength = $line.Length+1}
 ##echo $lineLength
 #
