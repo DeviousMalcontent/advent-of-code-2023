@@ -15,7 +15,8 @@ foreach ($line in $arrayFromFile)
 		$ArrayOfNumbers.Add($thisPartNumber);
 	}
 
-    foreach ($symbol in ([regex]'([@*/&#%+=$-])').Matches($line)){
+    #foreach ($symbol in ([regex]'([@*/&#%+=$-])').Matches($line)){
+	foreach ($symbol in ([regex]'([@*])').Matches($line)){
 		$thisSymbol = [PSCustomObject]@{
 			row = $lineNumber #-as [int];
 			column = $symbol.Index; #Distance from last new line!
@@ -27,12 +28,41 @@ foreach ($line in $arrayFromFile)
     $lineNumber++;
 }
 
+foreach($line in $arrayFromFile) {$lineLength = $line.Length+1}
+#echo $lineLength
+
 foreach ($Symbol in $ArrayOfSymbols) {
+	$CountBetweenGears = 0;
 	foreach ($Number in $ArrayOfNumbers) {
-		if ($Symbol.row -in $Number.rows -and $Symbol.column -in $Number.columns) {
-		 $ArrayToSum.Add($Number.value -as [int]);
+		$Gear = $Number.value | Where-Object { $Symbol.row -in $Number.rows -and $Symbol.column -in $Number.columns }
+		#echo $Gear
+		if($CountBetweenGears -ge 3) {
+			$CountBetweenGears = 0;
+		} else {
+			$ArrayToSum.Add($Gear -as [int]);
+			$CountBetweenGears++;
 		}
+
+		
+		#if($Number.Count -eq 2){
+		#$ArrayToSum.Add($Number.value -as [int]);
+		
+		echo $Gear[1]
+		echo "c:  $CountBetweenGears;"
+		#echo "----"
+		#if ($Symbol.row -in $Number.rows -and $Symbol.column -in $Number.columns) = $ture {
+		#	echo $Number.value
+		#	echo "----"		    
+		#	#echo $Number.value -as [int]
+		#	if($Number.Count -eq 2){
+		#		echo $Number1.value * $Number2.value;
+		#	}
+		# 
+		 #$ArrayToSum.Add($Number.value -as [int]);
+		#}
 	}
 }
 
-$ArrayToSum | Measure-Object -Sum
+echo "tes2"	
+#$ArrayToSum
+#$ArrayToSum | Measure-Object -Sum
